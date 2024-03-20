@@ -1,0 +1,35 @@
+.cart {
+  max-width: 40rem;
+  max-height: 21.5rem;
+  background-color: #313131;
+  color: white;
+  overflow-y: auto;
+}
+
+.cart h2 {
+  font-size: 1.25rem;
+  margin: 0.25rem 0;
+  text-align: center;
+}
+
+.cart ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.button--alt {
+  margin-right: 15px;
+  background-color: #313131;
+  color: white;
+}
+.button {
+  background-color: #313131;
+  color: white;
+}
+.total {
+  float: right;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.25 rem;
+}

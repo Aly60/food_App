@@ -1,0 +1,44 @@
+.detailsContainer {
+  max-width: 800px;
+  margin: 45px auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+h2 {
+  color: #333;
+}
+
+p {
+  margin: 10px 0;
+  color: #666;
+}
+img {
+  width: 8rem;
+  height: 8rem;
+  overflow: hidden;
+  border-radius: 20%;
+  margin-right: 1rem;
+  transition: transform 0.3s ease-in-out;
+}
+.priceDetail {
+  position: absolute;
+  margin-left: 550px;
+  font-weight: 300;
+  font-size: 30px;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0.5rem 0;
+}
+
+.action button {
+  background-color: #4d1601;
+  border: 1px solid white;
+  margin-left: 0.5rem;
+  padding: 0.15rem 1rem;
+  color: white;
+}

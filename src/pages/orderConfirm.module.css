@@ -1,0 +1,52 @@
+.orderConfirmHeader {
+  align-items: center;
+}
+ul {
+  list-style: none;
+}
+.ulListITems {
+  width: calc(100% - 200px);
+  padding-right: 30px;
+}
+.oderMain {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70%;
+  max-width: 60rem;
+  height: 55%;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 14px;
+  box-shadow: 0 1px 18px rgba(0, 0, 0, 0.75);
+  z-index: 40;
+  overflow-y: auto;
+}
+.goBack {
+  background-color: #313131;
+  color: white;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: auto;
+}
+.total {
+  /* float: right;*/
+  margin: auto;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.8rem;
+  /* margin-right: 9rem;*/
+  margin-bottom: 0.8rem;
+}
+.clearOrder {
+  background-color: #313131;
+  color: white;
+  border-radius: 10px;
+  padding: 10px 20px;
+}

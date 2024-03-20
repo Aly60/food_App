@@ -1,0 +1,60 @@
+{
+  "meals": [
+    {
+      "id": "m1",
+      "title": "Sushi",
+      "description": "finest fish and veggies",
+      "price": 22.29,
+      "ingrediants": "Fish, rice, seaweed, vegetables",
+      "img": "/assets/sushi.jpg",
+      "totalAmount": 22.29,
+      "quantity": 1
+    },
+    {
+      "id": "m2",
+      "title": "Schnitzel",
+      "description": "A german speciality",
+      "price": 16.5,
+      "ingrediants": "chicken, breadcrumbs, flour, eggs",
+      "img": " /assets/schnitzel.jpg",
+      "totalAmount": 16.5,
+      "quantity": 1
+    },
+    {
+      "id": "m3",
+      "title": "Barbeque burger",
+      "description": "American, raw, meaty",
+      "price": 12.99,
+      "ingrediants": "Beef patty, barbecue sauce, cheese, lettuce, tomato",
+      "img": "/assets/burger.jpg",
+      "totalAmount": 12.99,
+      "quantity": 1
+    },
+    {
+      "id": "m4",
+      "title": "Pizza",
+      "description": "Full of Cheese that will melt in your mouth",
+      "price": 15.6,
+      "ingrediants": "Dough, tomato sauce, cheese, toppings of your choice",
+      "img": "/assets/pizza.jpg",
+      "totalAmount": 15.6,
+      "quantity": 1
+    }
+  ],
+  "cart": [
+    {
+      "id": "m1",
+      "title": "Sushi",
+      "price": 22.29,
+      "description": "finest fish and veggies",
+      "img": "/assets/sushi.jpg"
+    },
+    {
+      "id": "m1",
+      "title": "Sushi",
+      "price": 22.29,
+      "description": "finest fish and veggies",
+      "img": "/assets/sushi.jpg"
+    }
+  ]
+}
