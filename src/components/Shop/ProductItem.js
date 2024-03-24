@@ -11,6 +11,7 @@ import axios from "axios";
 const ProductItem = (props) => {
   const { title, price, description, id, img, ingredients } = props;
   const [showInfo, setShowInfo] = useState(false);
+
   const dispatch = useDispatch();
 
   const addToCartHandler = () => {

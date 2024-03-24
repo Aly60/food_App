@@ -1,24 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import classes from "./CartItem.module.css";
 import { cartActions } from "../store/cartSlice";
 import axios from "axios";
+
 const CartItem = (props) => {
   const dispatch = useDispatch();
-  const { title, price, id } = props.item;
+  const { id } = props.item;
+  const cartItems = useSelector((state) => state.cart.items);
   const [quantity, setQuantity] = useState(0);
+  const [productDetails, setProductDetails] = useState(null);
 
   useEffect(() => {
-    const fetchQuantity = async () => {
+    const cartItem = cartItems.find((item) => item.id === id);
+    if (cartItem) {
+      setQuantity(cartItem.quantity);
+    }
+  }, [cartItems, id]);
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/cart/${id}`);
-        setQuantity(response.data.quantity || 0);
+        const response = await axios.get(`http://localhost:3001/meals/${id}`);
+        setProductDetails(response.data);
       } catch (error) {
-        console.log("Error fetching quantity:", error);
+        console.log("error from fetch Product Details", error);
       }
     };
-    fetchQuantity();
+    fetchProductDetails();
   }, [id]);
+
   const removeItemHandler = () => {
     axios({
       method: "DELETE",
@@ -26,9 +37,17 @@ const CartItem = (props) => {
     })
       .then((response) => {
         if (response.status === 200) {
-          console.log("Removed from cart item");
           dispatch(cartActions.removeItemFromCart(id));
-          setQuantity((prevQuantity) => Math.max(prevQuantity - 1, 0));
+
+          const updatedCartItems = cartItems.filter((item) => item.id !== id);
+          const existingCartItem = updatedCartItems.find(
+            (item) => item.id === id
+          );
+          if (existingCartItem) {
+            setQuantity(existingCartItem.quantity);
+          } else {
+            setQuantity(0);
+          }
         } else {
           alert("Cart Is Already Empty");
         }
@@ -37,6 +56,7 @@ const CartItem = (props) => {
         console.log("Error removing from cart item", error);
       });
   };
+
   const addItemHandler = () => {
     axios({
       method: "POST",
@@ -44,15 +64,36 @@ const CartItem = (props) => {
     })
       .then((response) => {
         if (response.status === 201) {
-          console.log("Added to cart", response.data);
-          dispatch(
-            cartActions.addItemToCart({
-              id,
-              title,
-              price,
-            })
-          );
-          setQuantity((prevQuantity) => prevQuantity + 1);
+          const existingCartItem = cartItems.find((item) => item.id === id);
+          if (existingCartItem) {
+            const updatedQuantity = existingCartItem.quantity + 1;
+            axios({
+              method: "PUT",
+              url: `http://localhost:3001/cart/${id}`,
+              data: { quantity: updatedQuantity },
+            }).then(() => {
+              dispatch(
+                cartActions
+                  .updateItemQuantity({
+                    id,
+                    quantity: updatedQuantity,
+                  })
+                  .catch((error) => {
+                    console.log("Error updating quantity:", error);
+                  })
+              );
+              setQuantity(updatedQuantity);
+            });
+          } else {
+            dispatch(
+              cartActions.addItemToCart({
+                id,
+                title: productDetails.title,
+                price: productDetails.price,
+              })
+            );
+            setQuantity(quantity + 1);
+          }
         }
       })
       .catch((error) => {
@@ -60,17 +101,21 @@ const CartItem = (props) => {
       });
   };
 
-  const total = (quantity * price).toFixed(2);
-  console.log("quantity:", quantity);
-  console.log("price:", price);
-  console.log("total:", total);
+  if (!productDetails) {
+    return <p> loading...</p>;
+  }
+
+  const total = (productDetails.price * quantity).toFixed(2);
+
   return (
     <li className={classes.item}>
       <header>
-        <h3>{title}</h3>
+        <h3>{productDetails.title}</h3>
         <div className={classes.price}>
           ${total}
-          <span className={classes.itemprice}>(${price.toFixed(2)}/item)</span>
+          <span className={classes.itemprice}>
+            (${productDetails.price.toFixed(2)}/item)
+          </span>
         </div>
       </header>
       <div className={classes.details}>

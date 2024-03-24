@@ -1,8 +1,6 @@
 .cart {
   max-width: 40rem;
   max-height: 21.5rem;
-  background-color: #313131;
-  color: white;
   overflow-y: auto;
 }
 
