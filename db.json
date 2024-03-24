@@ -8,7 +8,7 @@
       "ingrediants": "Fish, rice, seaweed, vegetables",
       "img": "/assets/sushi.jpg",
       "totalAmount": 22.29,
-      "quantity": 1
+      "quantity": 0
     },
     {
       "id": "m2",
@@ -41,20 +41,5 @@
       "quantity": 1
     }
   ],
-  "cart": [
-    {
-      "id": "m1",
-      "title": "Sushi",
-      "price": 22.29,
-      "description": "finest fish and veggies",
-      "img": "/assets/sushi.jpg"
-    },
-    {
-      "id": "m1",
-      "title": "Sushi",
-      "price": 22.29,
-      "description": "finest fish and veggies",
-      "img": "/assets/sushi.jpg"
-    }
-  ]
+  "cart": []
 }

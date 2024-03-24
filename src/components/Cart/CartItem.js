@@ -40,6 +40,7 @@ const CartItem = (props) => {
           dispatch(cartActions.removeItemFromCart(id));
 
           const updatedCartItems = cartItems.filter((item) => item.id !== id);
+
           const existingCartItem = updatedCartItems.find(
             (item) => item.id === id
           );
@@ -48,6 +49,18 @@ const CartItem = (props) => {
           } else {
             setQuantity(0);
           }
+
+          axios({
+            method: "PATCH",
+            url: "http://localhost:3001/cart",
+            data: updatedCartItems,
+          })
+            .then((response) => {
+              console.log("Cart updated on the server:", response.data);
+            })
+            .catch((error) => {
+              console.log("Error updating cart on the server:", error);
+            });
         } else {
           alert("Cart Is Already Empty");
         }
@@ -56,7 +69,6 @@ const CartItem = (props) => {
         console.log("Error removing from cart item", error);
       });
   };
-
   const addItemHandler = () => {
     axios({
       method: "POST",
@@ -65,10 +77,11 @@ const CartItem = (props) => {
       .then((response) => {
         if (response.status === 201) {
           const existingCartItem = cartItems.find((item) => item.id === id);
+          // if item already exists in cart, update quantity
           if (existingCartItem) {
             const updatedQuantity = existingCartItem.quantity + 1;
             axios({
-              method: "PUT",
+              method: "PATCH",
               url: `http://localhost:3001/cart/${id}`,
               data: { quantity: updatedQuantity },
             }).then(() => {
@@ -84,12 +97,14 @@ const CartItem = (props) => {
               );
               setQuantity(updatedQuantity);
             });
+            // if item doesn't exist in cart, add it
           } else {
             dispatch(
               cartActions.addItemToCart({
                 id,
                 title: productDetails.title,
                 price: productDetails.price,
+                quantity: 1,
               })
             );
             setQuantity(quantity + 1);

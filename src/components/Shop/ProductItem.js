@@ -25,6 +25,7 @@ const ProductItem = (props) => {
         description,
         img,
         ingredients,
+        quantity: 1,
       },
     })
       .then((response) => {
@@ -38,6 +39,7 @@ const ProductItem = (props) => {
               description,
               img,
               ingredients,
+              quantity: 1,
             })
           );
         }
