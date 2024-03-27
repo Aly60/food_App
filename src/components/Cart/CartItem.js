@@ -10,6 +10,7 @@ const CartItem = (props) => {
   const cartItems = useSelector((state) => state.cart.items);
   const [quantity, setQuantity] = useState(0);
   const [productDetails, setProductDetails] = useState(null);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const cartItem = cartItems.find((item) => item.id === id);
@@ -30,75 +31,95 @@ const CartItem = (props) => {
     fetchProductDetails();
   }, [id]);
 
+  useEffect(() => {
+    if (productDetails) {
+      setTotal((productDetails.price * quantity).toFixed(2));
+    }
+  }, [productDetails, quantity]);
+
   const removeItemHandler = () => {
-    axios({
-      method: "DELETE",
-      url: `http://localhost:3001/cart/${id}`,
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          dispatch(cartActions.removeItemFromCart(id));
-
-          const updatedCartItems = cartItems.filter((item) => item.id !== id);
-
-          const existingCartItem = updatedCartItems.find(
-            (item) => item.id === id
-          );
-          if (existingCartItem) {
-            setQuantity(existingCartItem.quantity);
-          } else {
+    if (quantity === 1) {
+      axios({
+        method: "DELETE",
+        url: `http://localhost:3001/cart/${id}`,
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            dispatch(cartActions.clearCart(id));
             setQuantity(0);
           }
-
-          axios({
-            method: "PATCH",
-            url: "http://localhost:3001/cart",
-            data: updatedCartItems,
-          })
-            .then((response) => {
-              console.log("Cart updated on the server:", response.data);
-            })
-            .catch((error) => {
-              console.log("Error updating cart on the server:", error);
-            });
-        } else {
-          alert("Cart Is Already Empty");
-        }
+        })
+        .catch((error) => {
+          console.log("Error removing from cart:", error);
+        });
+    } else {
+      axios({
+        method: "PATCH",
+        url: `http://localhost:3001/cart/${id}`,
+        data: { quantity: quantity - 1 },
       })
-      .catch((error) => {
-        console.log("Error removing from cart item", error);
-      });
+        .then((response) => {
+          if (response.status === 200) {
+            dispatch(
+              cartActions.removeItemFromCart({ id, quantity: quantity - 1 })
+            );
+            setQuantity(quantity - 1);
+            //const updatedCartItems = cartItems.filter((item) => item.id !== id);
+
+            //const existingCartItem = updatedCartItems.find(
+            //  (item) => item.id === id
+            //);
+            //if (existingCartItem) {
+            // setQuantity(existingCartItem.quantity);
+            // } else {
+            //  setQuantity(quantity - 1);
+            //}
+          }
+        })
+        .catch((error) => {
+          console.log("Error removing from cart item", error);
+        });
+    }
   };
   const addItemHandler = () => {
-    axios({
-      method: "POST",
-      url: `http://localhost:3001/cart/${id}`,
-    })
-      .then((response) => {
-        if (response.status === 201) {
-          const existingCartItem = cartItems.find((item) => item.id === id);
-          // if item already exists in cart, update quantity
-          if (existingCartItem) {
-            const updatedQuantity = existingCartItem.quantity + 1;
-            axios({
-              method: "PATCH",
-              url: `http://localhost:3001/cart/${id}`,
-              data: { quantity: updatedQuantity },
-            }).then(() => {
-              dispatch(
-                cartActions
-                  .updateItemQuantity({
-                    id,
-                    quantity: updatedQuantity,
-                  })
-                  .catch((error) => {
-                    console.log("Error updating quantity:", error);
-                  })
-              );
-              setQuantity(updatedQuantity);
-            });
-            // if item doesn't exist in cart, add it
-          } else {
+    const existingCartItem = cartItems.find((item) => item.id === id);
+
+    if (existingCartItem) {
+      const updateedQuantity = existingCartItem.quantity + 1;
+      axios({
+        method: "PATCH",
+        url: `http://localhost:3001/cart/${id}`,
+        data: { quantity: updateedQuantity },
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            dispatch(
+              cartActions.addItemToCart({
+                id,
+                title: productDetails.title,
+                price: productDetails.price,
+                quantity: updateedQuantity,
+              })
+            );
+            setQuantity(updateedQuantity);
+          }
+        })
+        .catch((error) => {
+          console.log("Error updating cart item:", error);
+        });
+    } else {
+      axios({
+        method: "POST",
+        url: `http://localhost:3001/cart`,
+        data: {
+          id,
+          title: productDetails.title,
+          price: productDetails.price,
+          quantity: 1,
+        },
+      })
+        .then((response) => {
+          if (response.status === 201) {
             dispatch(
               cartActions.addItemToCart({
                 id,
@@ -107,20 +128,18 @@ const CartItem = (props) => {
                 quantity: 1,
               })
             );
-            setQuantity(quantity + 1);
+            setQuantity(1);
           }
-        }
-      })
-      .catch((error) => {
-        console.log("Error adding to cart:", error);
-      });
+        })
+        .catch((error) => {
+          console.log("Error adding item to cart:", error);
+        });
+    }
   };
 
   if (!productDetails) {
     return <p> loading...</p>;
   }
-
-  const total = (productDetails.price * quantity).toFixed(2);
 
   return (
     <li className={classes.item}>
@@ -139,8 +158,12 @@ const CartItem = (props) => {
         </div>
 
         <div className={classes.actions}>
-          <button onClick={removeItemHandler}>-</button>
-          <button onClick={addItemHandler}>+</button>
+          <button className={classes.remove} onClick={removeItemHandler}>
+            -
+          </button>
+          <button className={classes.add} onClick={addItemHandler}>
+            +
+          </button>
         </div>
       </div>
     </li>

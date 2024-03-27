@@ -4,9 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "./components/store/uiSlice";
 import Cart from "./components/Cart/Cart";
 import Layout from "./components/Layout/Layout";
-import Products from "./components/Shop/Products";
-import OrderConfirm from "./pages/orderConfirm";
-import ProductsDetail from "./components/Shop/ProductsDetail";
+import { routes } from "./routes";
 function App() {
   const dispatch = useDispatch();
   const showCart = useSelector((state) => state.ui.cartIsVisible);
@@ -20,10 +18,9 @@ function App() {
       <Layout>
         {showCart && <Cart onClosed={toggleCartHandler} />}
         <Routes>
-          <Route path="/order-confirm" element={<OrderConfirm />} />
-          <Route path="/" element={<Products />} />
-          <Route path="/product/:productId" element={<ProductsDetail />} />
-          <Route path="*" element={<Products />} />
+          {routes.map((route, index) => (
+            <Route key={index} {...route} />
+          ))}
         </Routes>
       </Layout>
     </Router>

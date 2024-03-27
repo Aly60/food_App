@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import classes from "./productsDetail.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { cartActions } from "../store/cartSlice";
+import { cartActions } from "../../components/store/cartSlice";
 const ProductsDetail = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();

@@ -7,27 +7,33 @@ import classes from "./Cart.module.css";
 import CartItem from "./CartItem";
 import Modal from "../UI/Modal";
 import axios from "axios";
+import { fetchCartItems } from "../store/cartSlice";
 const Cart = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [cartItems, setCartItem] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
+
   useEffect(() => {
-    const fetchCartItems = async () => {
+    dispatch(fetchCartItems());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/cart");
-        console.log("cart data from the servrer", response.data);
+        const response = await axios.get(`http://localhost:3001/cart`);
+        setCartItem(response.data);
         const items = response.data;
         setCartItem(items);
-        const total = items.reduce((total, item) => total + item.price, 0);
+        const total = items.reduce((acc, item) => acc + item.price, 0);
         setTotalAmount(total);
       } catch (error) {
-        console.log("error fetching data from cart", error);
+        console.log("error from fetch Product Details", error);
       }
     };
-    fetchCartItems();
-  }, [totalAmount]);
+    fetchProductDetails();
+  }, []);
 
   const orderHandler = () => {
     navigate("/order-confirm", { state: { selectedItems: cartItems } });

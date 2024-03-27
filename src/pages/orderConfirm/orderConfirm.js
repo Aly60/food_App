@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import classes from "./orderConfirm.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import CartItem from "../components/Cart/CartItem";
-import { uiActions } from "../components/store/uiSlice";
+import CartItem from "../../components/Cart/CartItem";
+import { uiActions } from "../../components/store/uiSlice";
 //import { clearOrderActions } from "../components/store/clearOrderSlice";
-import { cartActions } from "../components/store/cartSlice";
+import { cartActions } from "../../components/store/cartSlice";
 
 const OrderConfirm = () => {
   const dispatch = useDispatch();

@@ -1,7 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 //import axios from "axios";
 
 //const BaseUrl = "http://localhost:3001/cart";
+
 const getItemFromLocalStorage = (key) => {
   try {
     const storedCart = localStorage.getItem(key);
@@ -29,7 +30,21 @@ const initialState = {
   items: getItemFromLocalStorage("cart") || [],
   totalQuantity: getItemFromLocalStorage("totalQuantity") || 0,
   totalAmount: totalCartAmount(getItemFromLocalStorage("cart") || 0),
+  error: "",
 };
+export const fetchCartItems = createAsyncThunk(
+  "cart/fetchCartItems",
+  async () => {
+    try {
+      const response = await fetch("http://localhost:3001/cart");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+);
 
 const cartSlice = createSlice({
   name: "cart",
@@ -65,14 +80,13 @@ const cartSlice = createSlice({
         return;
       }
 
-      state.totalQuantity--;
-
       if (existingItem.quantity === 1) {
         state.items = state.items.filter((item) => item.id !== id);
       } else {
         existingItem.quantity--;
         existingItem.totalPrice = existingItem.totalPrice - existingItem.price;
       }
+      state.totalQuantity = state.totalQuantity - 1;
 
       state.totalAmount = totalCartAmount(state.items);
 
@@ -89,6 +103,17 @@ const cartSlice = createSlice({
       saveLocalStorage("totalAmount", 0);
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCartItems.fulfilled, (state, action) => {
+        state.items = action.payload;
+      })
+      .addCase(fetchCartItems.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
+  },
 });
+
 export const cartActions = cartSlice.actions;
 export default cartSlice;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ProductItem from "./ProductItem";
+import ProductItem from "../productItem/ProductItem";
 import classes from "./Products.module.css";
 const Products = () => {
   const [meals, setMeals] = useState([]);
