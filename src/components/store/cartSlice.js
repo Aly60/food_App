@@ -67,7 +67,8 @@ const cartSlice = createSlice({
         existingItem.quantity++;
         existingItem.totalPrice = existingItem.totalPrice + newItem.price;
       }
-      state.totalAmount = totalCartAmount(state.items);
+      //state.totalAmount = totalCartAmount(state.items);
+      state.totalAmount += action.payload.price;
 
       saveLocalStorage("cart", state.items);
       saveLocalStorage("totalQuantity", state.totalQuantity);
@@ -75,20 +76,26 @@ const cartSlice = createSlice({
     },
     removeItemFromCart(state, action) {
       const id = action.payload;
-      const existingItem = state.items.find((item) => item.id === id);
-      if (!existingItem) {
-        return;
-      }
+      const existingItemIndex = state.items.findIndex((item) => item.id === id);
 
+      if (existingItemIndex === -1) {
+        return state;
+      }
+      const existingItem = state.items[existingItemIndex];
+      /*if (!existingItem) {
+        return state;
+      }
+*/
       if (existingItem.quantity === 1) {
         state.items = state.items.filter((item) => item.id !== id);
       } else {
         existingItem.quantity--;
         existingItem.totalPrice = existingItem.totalPrice - existingItem.price;
       }
-      state.totalQuantity = state.totalQuantity - 1;
+      state.totalQuantity--;
+      state.totalAmount -= existingItem.price;
 
-      state.totalAmount = totalCartAmount(state.items);
+      //state.totalAmount = totalCartAmount(state.items);
 
       saveLocalStorage("cart", state.items);
       saveLocalStorage("totalQuantity", state.totalQuantity);

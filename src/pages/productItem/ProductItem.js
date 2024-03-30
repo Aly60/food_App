@@ -30,7 +30,7 @@ const ProductItem = (props) => {
               cartActions.addItemToCart({
                 id,
                 quantity: updatedQuantity,
-                // price: updatedPrice,
+                price,
               })
             );
           }

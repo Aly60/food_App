@@ -64,16 +64,17 @@ const CartItem = (props) => {
               cartActions.removeItemFromCart({ id, quantity: quantity - 1 })
             );
             setQuantity(quantity - 1);
-            //const updatedCartItems = cartItems.filter((item) => item.id !== id);
+            /*
+           const updatedCartItems = cartItems.filter((item) => item.id !== id);
 
-            //const existingCartItem = updatedCartItems.find(
-            //  (item) => item.id === id
-            //);
-            //if (existingCartItem) {
-            // setQuantity(existingCartItem.quantity);
-            // } else {
-            //  setQuantity(quantity - 1);
-            //}
+            const existingCartItem = updatedCartItems.find(
+              (item) => item.id === id
+            );
+            if (existingCartItem) {
+             setQuantity(existingCartItem.quantity);
+             } else {
+              setQuantity(quantity - 1);
+            }*/
           }
         })
         .catch((error) => {
@@ -85,11 +86,11 @@ const CartItem = (props) => {
     const existingCartItem = cartItems.find((item) => item.id === id);
 
     if (existingCartItem) {
-      const updateedQuantity = existingCartItem.quantity + 1;
+      const updatedQuantity = existingCartItem.quantity + 1;
       axios({
         method: "PATCH",
         url: `http://localhost:3001/cart/${id}`,
-        data: { quantity: updateedQuantity },
+        data: { quantity: updatedQuantity },
       })
         .then((response) => {
           if (response.status === 200) {
@@ -98,10 +99,10 @@ const CartItem = (props) => {
                 id,
                 title: productDetails.title,
                 price: productDetails.price,
-                quantity: updateedQuantity,
+                quantity: updatedQuantity,
               })
             );
-            setQuantity(updateedQuantity);
+            setQuantity(updatedQuantity);
           }
         })
         .catch((error) => {
